@@ -22,10 +22,12 @@ class SignalRHubSensor(Sensor):
         self.connection = Connection(self.url, self.session)
         # start a connection
         self.connection.start()
+
         # add a handler to process notifications to the connection
-        self.connection.handlers += \
-            lambda data: self._logger.debug(
-                'Connection: new notification - %s' % data)
+        def _log_notifications(data):
+            self._logger.debug('Connection: new notification - {}'.format(data))
+        self.connection.handlers += _log_notifications  # noqa pylint: disable=no-member
+
         # get hub
         self._hub = self.connection.hub(self.hub_name)
 
